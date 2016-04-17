@@ -24,8 +24,9 @@ def signup(request):
             #failure
             #account could not be created load errors into document
             print "failure"
-            print result
-            return render(request,"html/test.html",result)
+            variables = { 'errorlist' : result }
+            print variables
+            return render(request,"html/test.html",variables)
     else:
         #not a post request load document normally
         return render(request,"html/test.html")

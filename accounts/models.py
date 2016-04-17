@@ -42,7 +42,7 @@ class Accounts(models.Model):
         if password == None or password == "":
             errorlist.append( Error.NO_PASSWORD )
         if len(errorlist) > 0:
-            return { 'errors' : json.dumps(errorlist) }
+            return errorlist 
         else:
             if voice == "":
                 account = Accounts.create(username,password)
@@ -50,7 +50,7 @@ class Accounts(models.Model):
                 account = Accounts.create(username,password,voice)
             if account == Error.USER_EXISTS:
                 errorlist.append( Error.USER_EXISTS)
-                return { 'errors' : json.dumps(errorlist) }
+                return errorlist 
             else:
                 return account
 
