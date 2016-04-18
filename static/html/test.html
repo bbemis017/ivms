@@ -4,5 +4,10 @@
   <body>
     <h1>Test django/bluemix setup</h1>
     <h2>yayyyyy</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input name="username" type="text"/>
+      <button type="submit">submit</button>
+    </form>
   </body>
 </html>

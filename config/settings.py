@@ -45,6 +45,8 @@ INSTALLED_APPS = (
         'django.contrib.sessions',
         'django.contrib.messages',
         'django.contrib.staticfiles',
+        #our apps
+        'accounts',
         )
 
 MIDDLEWARE_CLASSES = (
@@ -70,7 +72,7 @@ TEMPLATES = [
                     'django.contrib.auth.context_processors.auth',
                     'django.contrib.messages.context_processors.messages',
                     ],
-                #'debug' : DEBUG,
+                'debug' : DEBUG,
                 },
             },
         ]

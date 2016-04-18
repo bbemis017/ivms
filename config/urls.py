@@ -5,5 +5,6 @@ from config import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^$',views.test),
+    url(r'^$', views.test),
+    url(r'^accounts/',include('accounts.urls')),
 ]
