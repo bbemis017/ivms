@@ -2,12 +2,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import User
+from config.constants import Error
 import json
-
-class Error:
-    USER_EXISTS = 0 
-    NO_USERNAME = 1
-    NO_PASSWORD = 2
 
 # Create your models here.
 class Accounts(models.Model):

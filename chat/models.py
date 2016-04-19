@@ -3,17 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from config.constants import Error
 import json
-
-class ChatError:
-    NO_TITLE = 0
-    TITLE_EXISTS = 1
-    NO_OWNER = 2
-    NO_USER = 3
-    USER_IN_ROOM = 4
-    NO_MESSAGE = 5
-    USER_NOT_IN_ROOM = 6
-    NO_CHATROOM = 7
 
 class ChatRoom(models.Model):
     owner = models.ForeignKey(User, null=False)
@@ -23,12 +14,12 @@ class ChatRoom(models.Model):
     def create(owner,title):
         errorlist = []
         if not isinstance(owner,User):
-            errorlist.append( ChatError.NO_OWNER )
+            errorlist.append( Error.NO_OWNER )
         if not title:
-            errorlist.append( ChatError.NO_TITLE )
+            errorlist.append( Error.NO_TITLE )
             return errorlist
         if ChatRoom.objects.filter(title=title).exists():
-            errorlist.append( ChatError.TITLE_EXISTS )
+            errorlist.append( Error.TITLE_EXISTS )
             return errorlist
         if len(errorlist) > 0:
             return errorlist
@@ -38,10 +29,10 @@ class ChatRoom(models.Model):
     def addUser(self,user):
         errorlist = []
         if not isinstance(user,User):
-            errorlist.append( ChatError.NO_USER)
+            errorlist.append( Error.NO_USER)
             return errorlist
         if ChatToUser.objects.filter(room=self,user=user).exists():
-            errorlist.append( ChatError.USER_IN_ROOM )
+            errorlist.append( Error.USER_IN_ROOM )
             return errorlist
         chatToUser = ChatToUser.objects.create(room=self,user=user)
         return chatToUser
@@ -49,12 +40,12 @@ class ChatRoom(models.Model):
     def removeUser(self,user):
         errorlist = []
         if not isinstance(user, User):
-            errorlist.append( ChatError.NO_USER)
+            errorlist.append( Error.NO_USER)
             return errorlist
         try:
             ChatToUser.objects.get(room=self,user=user).delete()
         except ChatToUser.DoesNotExist:
-            errorlist.append( ChatError.USER_NOT_IN_ROOM )
+            errorlist.append( Error.USER_NOT_IN_ROOM )
             return errorlist
 
         return True
@@ -62,16 +53,16 @@ class ChatRoom(models.Model):
     def sendMessage(self,user,text):
         errorlist = []
         if not isinstance(user, User):
-            errorlist.append( ChatError.NO_USER)
+            errorlist.append( Error.NO_USER)
             print "no user"
             return errorlist
         if not text:
-            errorlist.append( ChatError.NO_MESSAGE )
+            errorlist.append( Error.NO_MESSAGE )
             print "no message"
             return errorlist
         if not ChatToUser.objects.filter(room=self,user=user).exists():
             print "not in room"
-            errorlist.append( ChatError.USER_NOT_IN_ROOM )
+            errorlist.append( Error.USER_NOT_IN_ROOM )
             return errorlist
         message = Message.objects.create(room=self,user=user,text=text)
         return message
@@ -87,10 +78,10 @@ class ChatRoom(models.Model):
     def getMessages(self,user):
         errorlist = []
         if not isinstance(user,User):
-            errorlist.append( ChatError.NO_USER)
+            errorlist.append( Error.NO_USER)
             return errorlist
         if not ChatToUser.objects.filter(room=self,user=user).exists(): 
-            errorlist.append( ChatError.USER_NOT_IN_ROOM )
+            errorlist.append( Error.USER_NOT_IN_ROOM )
             return errorlist
 
         messages = Message.objects.filter(room=self)

@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from chat.models import *
+from config.constants import Error
 
 # Create your views here.
 def accessChat(request,title):
@@ -25,7 +26,7 @@ def accessChat(request,title):
 '''
 Accepts ajax request only, user must also be logged in
 must provide a room and text for message
-May return with errors from ChatError, if successful will return with
+May return with errors from Error, if successful will return with
 success
 '''
 @login_required
@@ -44,7 +45,7 @@ def sendMessage(request):
     try:
         room = ChatRoom.objects.get(title=roomTitle)
     except ChatRoom.DoesNotExist:
-        errorlist.append( ChatError.NO_CHATROOM )
+        errorlist.append( Error.NO_CHATROOM )
         data['errors'] = json.dumps( errorlist )
         return JsonResponse(data)
 
@@ -62,7 +63,7 @@ def sendMessage(request):
 Accepts an ajax request from a logged in user containing the room title 
 returns a json response containing users, messages, or errors
 If errors exists it will contain an array of error codes corresponding to
-ChatError
+Error
 '''
 @login_required
 def updateChat(request):
@@ -80,14 +81,14 @@ def updateChat(request):
     try:
         room = ChatRoom.objects.get(title=roomTitle)
     except ChatRoom.DoesNotExist:
-        errorlist.append( ChatError.NO_CHATROOM )
+        errorlist.append( Error.NO_CHATROOM )
         data['errors'] = json.dumps( errorlist )
         return JsonResponse(data)
 
     #get users in room and check if requesting user is in room
     userData = getUsers(room,request.user)
     if not userData:
-        errorlist.append( ChatError.USER_NOT_IN_ROOM )
+        errorlist.append( Error.USER_NOT_IN_ROOM )
         data['errors'] = json.dumps( errorlist )
         return JsonResponse(data)
     else:
