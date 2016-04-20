@@ -1,0 +1,214 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Dashboard</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand font-title">IVM</a>
+            </div>
+            <!-- Top Menu Items -->
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a> Log Out</a>
+                </li>
+            </ul>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li id="dashboard">
+                        <a href="/accounts/manage"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li id="createRoom">
+                        <a><i class="fa fa-fw fa-bar-chart-o"></i> Create Room</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+
+        </nav>
+
+
+        <div id="page-wrapper">
+
+            <div class="container-fluid" style="margin-top: 90px;">
+                <div class="" id="name_info">
+                <div class="row">
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-3">
+                        <h1>
+                            My Account
+                        </h1>
+                    </div>
+
+                    <div class="col-lg-4">
+
+                      {% if editInfo %}
+                        <form id="submitChanges" class="form-group" method="POST">
+                          {% csrf_token %}
+                          <div class="form-group">
+                            <h3><span class="label label-info">Username</span></h3>
+                            <p><input name="first_name" type="text" placeholder="username"></p>
+                          </div>
+                          <div class="form-group">
+                            <h3><span class="label label-info">First name</span></h3>
+                            <input name="last_name" type="text" placeholder="firstname">
+                          </div>
+                          <div class="form-group">
+                            <h3><span class="label label-info">Last name</span></h3>
+                            <input name="last_name" type="text" placeholder="lastname">
+                          </div>
+                          <input name="user_id" value="{{ request.user.id }}" class="hidden">
+                        </form>
+                      {% endif %}
+
+                      {% if not editInfo %}
+                      <div class="lead">
+                        <span class="label label-info">Username</span>
+                        <p>username</p>
+                        </br>
+                        <span class="label label-info">First name</span>
+                        <p>firstname</p>
+                        </br>
+                        <span class="label label-info">Last name</span>
+                        <p>lastname</p>
+                      </div>
+                      {% endif %}
+                    </div>
+
+                  {% if not editInfo %}
+                  <div class="col-lg-4" style="margin-top: 200px;">
+                    <form id="edit" class="form-group" method="POST">
+                      {% csrf_token %}
+                      <button name="edit" type="submit" class="btn btn-primary">Edit Account</button>
+                    </form>
+                  {% endif %}
+                  {% if editInfo %}
+                  <div class="col-lg-4" style="margin-top: 200px;">
+                    <form id="edit" class="form-group" method="POST">
+                      {% csrf_token %}
+                        <div class="form-group">
+                        <button name="submit" type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                  {% endif %}
+                  </div>
+                </div>
+                </div>
+
+
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                    </h1>
+                </div>
+
+            </div>
+            <!-- name_info -->
+
+            <div class="container-fluid">
+                <div class="" id="voice_info">
+                    </br>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-3">
+                        </br>
+                        <h1>
+                            My Voice
+                        </h1>
+                    </div>
+
+                    <div class="col-lg-5">
+                        </br>
+                        </br>
+                        <div class="form-group">
+                            <select id="voice" name="voice" class="form-control">
+                                <option id="select" value="select"> Select </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                        </h1>
+                    </div>
+
+                </div>
+            </div>
+            <!-- voice_info -->
+
+            <div class="container-fluid">
+
+                <div class="" id="room_info">
+                    </br>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-3">
+                        </br>
+                        <h1>
+                            My Room
+                        </h1>
+                    </div>
+
+                    <div class="col-lg-5">
+                      </br>
+                      <div class="list-group">
+                        <a class="list-group-item">Room 1</a>
+                        <a class="list-group-item">Room 2</a>
+                        <a class="list-group-item">Room 3</a>
+                      </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- room_info -->
+
+
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="{% static "js/jquery.js" %}"></script>
+    <script src="{% static "js/jquery.cookie.js" %}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "bootstrap-3.3.6/js/bootstrap.min.js" %}"></script>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="{% static "js/signup.js" %}"></script>
+    <script language="javascript">
+        $("#dashboard").addClass("active");
+    </script>
+
+
+</body>
+
+</html>

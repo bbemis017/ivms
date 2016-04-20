@@ -30,3 +30,12 @@ def signup(request):
     else:
         #not a post request load document normally
         return render(request,"html/test.html")
+
+def manage(request):
+    if 'edit' in request.POST:
+        #user has clicked on edit
+        editInfo = True
+        varibles = {"editInfo": editInfo}
+        return render(request,"html/dashboard.html", varibles)
+    else:
+        return render(request,"html/dashboard.html")
