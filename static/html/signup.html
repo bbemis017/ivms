@@ -1,0 +1,100 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <title>Sign in</title>
+    </head>
+
+    <body>
+    <div class="container text-center" style="margin-top: 80px;">
+        <div class="row">
+            <div class="col-md-6">
+                <h2> Login </h2>
+		<div class="col-md-2"> </div>
+		<div class="col-md-8">
+			<div class="password_form" style="margin-top: 30px;">
+				<form class="form-group" method="POST">
+				{% csrf_token %}
+				<input hidden name="action" value="login" />
+				<div class="form-group">
+					<label class="control-label"> Username </label>
+					<input id="id_username" name="username" type="text" placeholder="Username" class="form-control" />
+				</div>
+				<div class="form-group">
+					<label class="control-label"> Password </label>
+					<input id="id_password" name="password" type="password" placeholder="Password" class="form-control" />
+				</div>
+				<button type="submit" class="btn btn-info btn-block"> Log in </button>
+				<br>
+				{% if errorlist and action == "login" %}
+				{% for error in errorlist %}
+				{% if error == 1 %}
+				<ul class="alert alert-danger">Please enter a username!</ul>
+				{% elif error == 2 %}
+				<ul class="alert alert-danger">Please enter a password!</ul>
+				{% elif error == 3 %}
+				<ul class="alert alert-danger">User does not exist!</ul>
+				{% endif %}
+				{% endfor %}
+				{% endif %}
+				</form>
+			</div>
+		</div>
+		<div class="col-md-2"> </div>
+
+            </div>
+            <div class="col-md-6">
+                <h2> Signup </h2>
+                <div class="col-md-2"> </div>
+                <div class="col-md-8"> 
+                <div class="password_form" style="margin-top: 30px;"> 
+                    <form class="form-group" method="POST">
+			{% csrf_token %}
+			<input hidden name="action" value="signup" />
+                        <div class="form-group">
+
+                            <label class="control-label"> Username </label>
+                            <input id="id_username" name="username" type="text" placeholder="Username" class="form-control"/>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"> Password </label>
+                            <input id="id_password" name="password" type="password" placeholder="Password" class="form-control"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label"> Select your voice </label>
+                            <select id="voice" name="voice" class="form-control">
+                                <option id="select" value="select"> Select </option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-info btn-block" > Sign Up </button>
+			<br>
+			{% if errorlist and action == "signup" %}
+			{% for error in errorlist %}
+			{% if error == 0 %}
+			<ul class="alert alert-danger">User already exist!</ul>
+			{% elif error == 1 %}
+			<ul class="alert alert-danger">Please enter a username!</ul>
+			{% elif error == 2 %}
+			<ul class="alert alert-danger">Please enter a password!</ul>
+			{% endif %}
+			{% endfor %}
+			{% endif %}
+                    </form>
+                </div>
+                <div class="col-md-2"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="{% static "js/signup.js" %}"></script>
+
+    </body>
+</html>
+        
