@@ -3,6 +3,7 @@ from accounts import views
 
 urlpatterns = [
         url(r'^signup/$', views.signup),
-        url(r'^manage/$',views.test),
+        url(r'^login/$', views.test),
+        url(r'^manage/$',views.manage),
 ]
 

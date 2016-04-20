@@ -121,8 +121,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-
-
 # Parse database configuration from $DATABASE_URL
 if not local:
     import dj_database_url
@@ -135,7 +133,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['*']
 
 # Static asset configuration
-
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
