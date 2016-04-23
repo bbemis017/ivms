@@ -36,8 +36,9 @@
 .bottomChatInput {
     bottom: 0px;
     position: absolute;
-    width: 100%;
+    width: 80%;
     position: fixed;
+    margin-left: 20%;
 }
 
 .messageZone {
@@ -62,11 +63,9 @@
 .inputTextBox {
     overflow: hidden; 
     padding-right: .5em; 
-    margin-left: 32px;
 }
 .textBox {
     width: 100%;
-    margin-left: 20%;
 }
 .userList {
     text-align: center;
