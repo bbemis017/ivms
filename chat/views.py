@@ -9,16 +9,17 @@ def accessChat(request,title):
     try:
         room = ChatRoom.objects.get(title=title)
     except ChatRoom.DoesNotExist:
+        print "room does not exist"
         #if chat does not exist direct user to does not exist page/create
-        return HttpResponseRedirect("/accounts/profile")
+        return HttpResponseRedirect("/accounts/manage")
     if not request.user.is_authenticated():
         #ask user to login to chat room
-        return HttpResponseRedirect("/accounts/login")
+        return HttpResponseRedirect("/accounts/signup")
     try:
         userInRoom = ChatToUser.objects.get(room=room,user=request.user)
     except ChatToUser.DoesNotExist:
         #user does not have access to chat room
-        return HttpResponseRedirect("/accounts/profile")
+        return HttpResponseRedirect("/accounts/manage")
 
     print "success chat page"
     return render(request,'html/test.html')

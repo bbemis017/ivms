@@ -5,12 +5,6 @@ from django.contrib.auth.models import User
 from config.constants import Error
 import json
 
-class Error:
-    USER_EXISTS = 0 
-    NO_USERNAME = 1
-    NO_PASSWORD = 2
-    USER_DOES_NOT_EXIST = 3
-
 # Create your models here.
 class Accounts(models.Model):
     #constants
@@ -19,9 +13,11 @@ class Accounts(models.Model):
     #model fields
     user = models.ForeignKey(User, null=False)
     voice = models.CharField(max_length=50,default=DEFAULT_VOICE)
+    firstname = models.CharField(max_length=50,null=True)
+    lastname = models.CharField(max_length=50,null=True)
 
     @staticmethod
-    def create(username,password,voice=DEFAULT_VOICE):
+    def create(username,password,voice=DEFAULT_VOICE,firstname="",lastname=""):
 
         if User.objects.filter(username=username).exists():
             return Error.USER_EXISTS 
@@ -33,8 +29,21 @@ class Accounts(models.Model):
         if voice == None:
             voice = Accounts.DEFAULT_VOICE
 
-        account = Accounts.objects.create(user=user,voice=voice)
+        account = Accounts.objects.create(user=user,voice=voice,firstname=firstname,lastname=lastname)
         return account 
+
+    def update(self,voice=DEFAULT_VOICE,firstname="",lastname=""):
+        errorlist = []
+        if voice == 'select':
+            errorlist.append( Error.NO_VOICE )
+            return errorlist
+        self.voice = voice
+        self.firstname = firstname
+        self.lastname = lastname
+        self.user.save()
+        self.save()
+        return True
+
 
     @staticmethod
     def verify(username,password,voice):

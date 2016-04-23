@@ -24,6 +24,7 @@ class ChatRoom(models.Model):
         if len(errorlist) > 0:
             return errorlist
         room = ChatRoom.objects.create(owner=owner,title=title)
+        room.addUser(owner)
         return room
 
     def addUser(self,user):
@@ -92,8 +93,6 @@ class ChatRoom(models.Model):
                 messageList.append( str( message.time ) )
                 messageList.append( message.text )
         return json.dumps( messageList )
-
-
 
     def delete(self):
 

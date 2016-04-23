@@ -6,15 +6,8 @@
 
     <title>Dashboard</title>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
 
 </head>
 
@@ -34,9 +27,9 @@
                 <a class="navbar-brand font-title">IVM</a>
             </div>
             <!-- Top Menu Items -->
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right logout">
                 <li>
-                    <a> Log Out</a>
+                    <a href="/accounts/logout"> Log Out</a>
                 </li>
             </ul>
 
@@ -44,11 +37,11 @@
                 <ul class="nav navbar-nav side-nav">
                     <li id="dashboard">
                         <a href="/accounts/manage"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    <li id="createRoom">
-                        <a><i class="fa fa-fw fa-bar-chart-o"></i> Create Room</a>
-                    </li>
                 </ul>
+
+                  </div>
+                </div>
+
             </div>
             <!-- /.navbar-collapse -->
 
@@ -71,62 +64,59 @@
                     <div class="col-lg-4">
 
                       {% if editInfo %}
-                        <form id="submitChanges" class="form-group" method="POST">
+                        <form class="form-group" method="POST">
                           {% csrf_token %}
                           <div class="form-group">
                             <h3><span class="label label-info">Username</span></h3>
-                            <p><input name="first_name" type="text" placeholder="username"></p>
+                            <p>{{ user.username }}</p>
                           </div>
                           <div class="form-group">
                             <h3><span class="label label-info">First name</span></h3>
-                            <input name="last_name" type="text" placeholder="firstname">
+                            <input name="first_name" type="text" value="{{ account.firstname }}"/>
                           </div>
                           <div class="form-group">
                             <h3><span class="label label-info">Last name</span></h3>
-                            <input name="last_name" type="text" placeholder="lastname">
+                            <input name="last_name" type="text" value="{{ account.lastname }}"/>
                           </div>
-                          <input name="user_id" value="{{ request.user.id }}" class="hidden">
+                          
+                          </br>
+                          </br>
+                          <div class="form-group">
+			  	<h3><span class="label label-info">My Voice</span></h3>
+                          	<select id="voice" name="voice" class="form-control">
+                            	    <option id="select" value="select"> Select </option>
+                          	</select>
+                          </div>
+
+                          <div class="form-group">
+                              <button name="updateBtn" type="submit" class="btn btn-primary">Update</button>
+                          </div>
+			
                         </form>
                       {% endif %}
+
 
                       {% if not editInfo %}
                       <div class="lead">
                         <span class="label label-info">Username</span>
-                        <p>username</p>
+                        <p>{{ user.username }}</p>
                         </br>
                         <span class="label label-info">First name</span>
-                        <p>firstname</p>
+                        <p>{{ account.firstname }}</p>
                         </br>
                         <span class="label label-info">Last name</span>
-                        <p>lastname</p>
+                        <p>{{ account.lastname }}</p>
                       </div>
                       {% endif %}
+                        {% for error in errorlist %}
+                          {% if error == 12 %}
+                            <ul class="alert alert-danger" align="middle">Your Voice cannot be empty!</ul>
+                          {% endif %}
+                        {% endfor %}
                     </div>
 
-                  {% if not editInfo %}
-                  <div class="col-lg-4" style="margin-top: 200px;">
-                    <form id="edit" class="form-group" method="POST">
-                      {% csrf_token %}
-                      <button name="edit" type="submit" class="btn btn-primary">Edit Account</button>
-                    </form>
-                  {% endif %}
-                  {% if editInfo %}
-                  <div class="col-lg-4" style="margin-top: 200px;">
-                    <form id="edit" class="form-group" method="POST">
-                      {% csrf_token %}
-                        <div class="form-group">
-                        <button name="submit" type="submit" class="btn btn-primary">Update</button>
-                        </div>
-                    </form>
-                  {% endif %}
-                  </div>
-                </div>
-                </div>
 
-
-                <div class="col-lg-12">
-                    <h1 class="page-header">
-                    </h1>
+                </div>
                 </div>
 
             </div>
@@ -137,22 +127,33 @@
                     </br>
                     <div class="col-lg-1">
                     </div>
-                    <div class="col-lg-3">
+                    
+                    {% if not editInfo %}
+		    <div class="col-lg-3">
                         </br>
                         <h1>
                             My Voice
                         </h1>
                     </div>
-
-                    <div class="col-lg-5">
-                        </br>
-                        </br>
-                        <div class="form-group">
-                            <select id="voice" name="voice" class="form-control">
-                                <option id="select" value="select"> Select </option>
-                            </select>
-                        </div>
+                    <div class="col-lg-5" style="margin-top: 50px;">
+                      <p>{{ account.voice }}</p>
                     </div>
+                    
+                    <div class="col-lg-3" style="margin-top: 40px;">
+                      <form id="edit" class="form-group" method="POST">
+                        {% csrf_token %}
+                        <button name="editBtn" type="submit" class="btn btn-primary">Edit Account</button>
+                      </form>
+                    </div>
+                    {% endif %}
+                    {% if editInfo %}
+                    <div class="col-lg-3 col-lg-offset-8" style="margin-top: 40px;">
+                      <form id="edit" class="form-group" method="POST">
+                        {% csrf_token %}
+                          
+                      </form>
+                    </div>
+                    {% endif %}
 
                     <div class="col-lg-12">
                         <h1 class="page-header">
@@ -174,15 +175,60 @@
                         <h1>
                             My Room
                         </h1>
+</li>
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClassModal">Create a New Room</button>
+
+                        <div id="createClassModal" class="modal fade" role="dialog">
+                          <div class="modal-dialog">
+
+                              <div class="modal-content" role="document">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Create a New Room</h4>
+                                  </div>
+
+                                  <div class="modal-body">
+
+                                  <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                      <label for="recipient-name" class="control-label">Enter the name for you room:</label>
+                                      <input id="room_name" name="room_name" type="text" class="form-control" id="recipient-name">
+                                    </div>
+                                  </div>
+
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button name="createRoomBtn" type="submit" class="btn btn-primary">Create</button>
+                                  </div>
+                                  </form>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5" style="margin-top: 60px;">
+                      <div class="list-group">
+                        {% for entry in chatToUser %}
+                          <a href= "/chat/{{ entry.room.title }}" class="list-group-item">{{ entry.room.title }}</a>
+                        {% endfor %}
+                      </div>
+                      </br>
+                      </br>
+                    </div>
+
+                    <div class="col-lg-4">
                     </div>
 
                     <div class="col-lg-5">
-                      </br>
-                      <div class="list-group">
-                        <a class="list-group-item">Room 1</a>
-                        <a class="list-group-item">Room 2</a>
-                        <a class="list-group-item">Room 3</a>
-                      </div>
+                        {% for error in errorlist %}
+                          {% if error == 4 %}
+                            <ul class="alert alert-danger" align="middle">Room Name cannot be empty!</ul>
+                          {% elif error == 5 %}
+                            <ul class="alert alert-danger" align="middle">Room Name already exists!</ul>
+                          {% endif %}
+                        {% endfor %}
                     </div>
 
                 </div>
@@ -196,18 +242,18 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <script src="{% static "js/jquery.js" %}"></script>
-    <script src="{% static "js/jquery.cookie.js" %}"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{% static "bootstrap-3.3.6/js/bootstrap.min.js" %}"></script>
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
-    <script src="{% static "js/signup.js" %}"></script>
-    <script language="javascript">
-        $("#dashboard").addClass("active");
-    </script>
+    <script>
+      var voice = "{{ account.voice }}";
+      $('#dashboard').addClass('active');
 
+    </script>
+    <script src="{% static "js/signup.js" %}"></script>
+    <script>
+      $('#room_name').on('input',replaceSpaces);
+    </script>
 
 </body>
 
