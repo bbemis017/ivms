@@ -1,5 +1,3 @@
-
-
 class Error:
     USER_EXISTS = 0
     NO_USERNAME = 1

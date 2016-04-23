@@ -1,0 +1,48 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>Chat Room</title>
+
+  </head>
+
+  <body>
+    <div class="left">
+      <h3 class="text-center">User in room</h3>
+      <div class="userList">
+        <ol>
+          <li>asdf</li>
+          <li>asdf</li>
+        </ol>
+      </div>
+      <button class="btn btn-success button_on_left_2">Add</button>
+      <button class="btn btn-danger button_on_left"> Quit Room </button>
+    </div>
+    <div class="right">
+      <div id="messageZone" class="messageZone">
+        <div id="messageBox" class="well well-sm messageBox">
+          <label id="author" class="author">adf: </label><label id="content">adf</label>
+        </div>
+      </div>
+    </div>
+
+    <form>
+      <div class="bottomChatInput">
+        <input id="send" type="button" value="Send Message" class="btn btn-primary submitButton" />
+        <div class="inputTextBox">
+          <input id="message" type="text" class="form-control textBox"/>
+        </div>
+      </div>
+    </form>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+    <script src="{% static 'js/jquery.cookie.js' %}"></script>
+    <script>
+      var title = "{{ room }}"
+    </script>
+    <script src="{% static 'js/chat.js' %}"></script>
+  </body>
+</html>

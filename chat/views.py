@@ -1,7 +1,9 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from chat.models import *
 from config.constants import Error
+import json
 
 # Create your views here.
 def accessChat(request,title):
@@ -21,8 +23,10 @@ def accessChat(request,title):
         #user does not have access to chat room
         return HttpResponseRedirect("/accounts/manage")
 
+    variables = { 'room' : room.title }
+
     print "success chat page"
-    return render(request,'html/test.html')
+    return render(request,'html/chat.html',variables)
 
 '''
 Accepts ajax request only, user must also be logged in
@@ -57,8 +61,7 @@ def sendMessage(request):
         data['errors'] = json.dumps( errorlist )
         return JsonResponse(data)
 
-    data['success'] = 1
-    return JsonResponse(data)
+    return updateChat(request)
 
 '''
 Accepts an ajax request from a logged in user containing the room title 
@@ -88,7 +91,9 @@ def updateChat(request):
 
     #get users in room and check if requesting user is in room
     userData = getUsers(room,request.user)
-    if not userData:
+    print "user data"
+    print userData
+    if not isinstance(userData,list):
         errorlist.append( Error.USER_NOT_IN_ROOM )
         data['errors'] = json.dumps( errorlist )
         return JsonResponse(data)
@@ -97,7 +102,7 @@ def updateChat(request):
 
     #get all messages in room
     messages = room.getMessages(request.user)
-    if not isinstance(messages,String):
+    if not isinstance(messages,str):
         data['errors'] = json.dumps( messages )
         return JsonResponse(data)
     else:
