@@ -5,6 +5,8 @@
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
+
     <title>Chat Room</title>
 
   </head>
@@ -71,7 +73,8 @@
     <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
     <script src="{% static 'js/jquery.cookie.js' %}"></script>
     <script>
-      var title = "{{ room }}"
+      var title = "{{ room }}";
+      var username = "{{ username }}";
     </script>
     <script src="{% static 'js/chat.js' %}"></script>
   </body>

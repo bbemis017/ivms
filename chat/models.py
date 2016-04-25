@@ -4,6 +4,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from config.constants import Error
+from datetime import datetime
+from django.utils.dateparse import parse_datetime
+from accounts.models import Accounts
 import json
 
 class ChatRoom(models.Model):
@@ -54,6 +57,7 @@ class ChatRoom(models.Model):
 
     def sendMessage(self,user,text):
         errorlist = []
+        account = None
         if not isinstance(user, User):
             errorlist.append( Error.NO_USER)
             print "no user"
@@ -66,7 +70,8 @@ class ChatRoom(models.Model):
             print "not in room"
             errorlist.append( Error.USER_NOT_IN_ROOM )
             return errorlist
-        message = Message.objects.create(room=self,user=user,text=text)
+        account = Accounts.objects.get(user=user)
+        message = Message.objects.create(room=self,user=user,text=text,voice=account.voice)
         return message
 
     '''
@@ -77,7 +82,7 @@ class ChatRoom(models.Model):
     3 - text of actual message
     @param user requesting messages
     '''
-    def getMessages(self,user):
+    def getMessages(self,user,number=None):
         errorlist = []
         if not isinstance(user,User):
             errorlist.append( Error.NO_USER)
@@ -86,13 +91,19 @@ class ChatRoom(models.Model):
             errorlist.append( Error.USER_NOT_IN_ROOM )
             return errorlist
 
-        messages = Message.objects.filter(room=self)
+        if number != None:
+            messages = Message.objects.filter(room=self,id__gt=number)
+        else:
+            messages = Message.objects.filter(room=self)
+
         messageList = []
         if messages.exists():
             for message in messages:
                 messageList.append( message.user.username )
-                messageList.append( str( message.time ) )
+                messageList.append( message.time.strftime('%Y-%m-%d %H:%M') )
                 messageList.append( message.text )
+                messageList.append( message.id )
+                messageList.append( message.voice )
         return json.dumps( messageList )
 
     def delete(self):
@@ -117,4 +128,5 @@ class Message(models.Model):
     time = models.DateTimeField(default=timezone.now)
     #utc timezone, broswer should convert to appropiate zone
     text = models.CharField(max_length=1000, null=False)
+    voice = models.CharField(max_length=50,null=False,default=Accounts.DEFAULT_VOICE)
 

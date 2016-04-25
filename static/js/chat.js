@@ -3,8 +3,14 @@ $('#send').click(sendMessage);
 $('#addUserButton').click(sendUser);
 
 var csrf_token = $.cookie('csrftoken');
-var messages = []
-var users = []
+var messages = [];
+var users = [];
+var loading = true;
+var readSelf = false;
+
+var tempi = 0;
+var messageQueue = [];
+var readIndex = 0;
 
 /**
  * parses messages into array of message
@@ -20,15 +26,27 @@ function getMessages(string){
   var message = {};
 
   for( var i = 0; i < raw.length; i++){
-    if( i % 3 == 0){
-      message['author'] = raw[i];
+    var mod = i % 5;
+
+    switch(mod){
+      case 0:
+        message['author'] = raw[i];
+        break;
+      case 1:
+        message['time'] = raw[i];
+        break;
+      case 2:
+        message['text'] = raw[i];
+        break;
+      case 3:
+        message['id'] = raw[i];
+        break;
+      case 4:
+        message['voice'] = raw[i];
+        addMessage(message);
+        break;
     }
-    else if( i % 3 == 1)
-      message['time'] = raw[i];
-    else{
-      message['text'] = raw[i];
-      addMessage(message);
-    }
+
   }
 
 }
@@ -44,7 +62,8 @@ function getUsers(string){
 
   var raw = JSON.parse( string );
   for( var i = 0; i < raw.length; i++){
-    addUser(raw[i]);
+    if( users.indexOf(raw[i]) > -1 )
+      addUser(raw[i]);
   }
 }
 
@@ -56,9 +75,23 @@ function getUsers(string){
  * message['text']
  */
 function addMessage(message){
-  messages.push(message);
+  messages.push( $.extend(true,{},message) );
+
+  //control for reading messages
+  if( loading == false){
+    if( readSelf){
+      read(message);
+    }
+    else{
+      if( message['author'].valueOf() != username.valueOf() )
+        read(message);
+    }
+  }
 
   //TODO: insert message in document
+
+
+  //
     $('#messageZone').append('<div id="messageBox" class="well well-sm messageBox"><label id="author" class="author">' + display_author(message) + ':&nbsp;</label><label id="content">'+ display(message)+'</label></div>');
 }
 
@@ -99,7 +132,9 @@ function addUser(username){
  * asks server for room information
  */
 function updateRoom(){
-  sendAjax('/chatInfo/update/',{},onUpdateResponse);
+  data = {}
+
+  sendAjax('/chatInfo/update/',data,onUpdateResponse);
 }
 
 /**
@@ -107,19 +142,42 @@ function updateRoom(){
  */
 function onLoad(){
   console.log("on load");
+  loading = true;
 
   //asks server for information
   updateRoom();
+
+  //start polling
+  setTimeout(poll,1200);
 }
 
 /**
  * responds to an update response from the server
  */
 function onUpdateResponse(json){
-  console.log("update response");
   getMessages(json.messages);
-  console.log(messages);
   getUsers(json.users);
+}
+
+/**
+ * read a message to the user
+ */
+function read(message){
+  if( responsiveVoice.isPlaying()){
+    var temp = $.extend(true,{},message);
+    messageQueue.push( temp );
+    return;
+  }
+
+    responsiveVoice.speak(message['text'],message['voice'],{ onend : nextRead });
+}
+
+function nextRead(){
+
+  if( readIndex  < messageQueue.length ){
+    read( messageQueue[ readIndex ] );
+    readIndex++;
+  }
 }
 
 /**
@@ -149,8 +207,10 @@ function sendUser(){
  */
 function onSendMessageResponse(json){
   console.log("send message success");
-  if( !json.errors)
+  if( !json.errors){
     onUpdateResponse(json);
+    $('#message').val("");
+  }
   else{
     console.log("error");
     console.log(json);
@@ -196,9 +256,30 @@ function onSendUserResponse(json){
  * adds csrf token to ajax and sends data to url, and response goes to successCall
  */
 function sendAjax(url,data,successCall){
+
+  lastMessage = messages[ messages.length - 1];
+  if( lastMessage === undefined)
+    lastMessage = 0;
+  else
+    lastMessage = lastMessage['id'];
+
+  data['lastMessage'] = lastMessage;
   data['room'] = title;
   data['csrfmiddlewaretoken'] = csrf_token;
   $.ajax({url: url, type: "POST", data: data, success: successCall, error: responseFailure});
+}
+
+/**
+ * poll the server for more information
+ */
+function poll(){
+  //console.log("poll" + tempi);
+  tempi++;
+  loading = false;
+
+  updateRoom();
+
+  setTimeout(poll,800);
 }
 
 /**

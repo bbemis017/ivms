@@ -23,7 +23,7 @@ def accessChat(request,title):
         #user does not have access to chat room
         return HttpResponseRedirect("/accounts/manage")
 
-    variables = { 'room' : room.title }
+    variables = { 'room' : room.title, 'username' : request.user.username }
 
     print "success chat page"
     return render(request,'html/chat.html',variables)
@@ -80,6 +80,11 @@ def updateChat(request):
 
     #TODO: error check this
     roomTitle = request.POST.get('room')
+    lastMessage = 0
+    if 'lastMessage' in request.POST:
+        lastMessage = request.POST.get('lastMessage')
+
+    print lastMessage
 
     #check if room exists
     try:
@@ -91,8 +96,6 @@ def updateChat(request):
 
     #get users in room and check if requesting user is in room
     userData = getUsers(room,request.user)
-    print "user data"
-    print userData
     if not isinstance(userData,list):
         errorlist.append( Error.USER_NOT_IN_ROOM )
         data['errors'] = json.dumps( errorlist )
@@ -101,13 +104,14 @@ def updateChat(request):
         data['users'] = json.dumps( userData ) 
 
     #get all messages in room
-    messages = room.getMessages(request.user)
+    messages = room.getMessages(request.user,lastMessage)
     if not isinstance(messages,str):
         data['errors'] = json.dumps( messages )
         return JsonResponse(data)
     else:
         data['messages'] = messages
 
+    print data
     #success 
     return JsonResponse(data)
 
