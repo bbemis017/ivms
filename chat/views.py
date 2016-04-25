@@ -128,3 +128,38 @@ def getUsers(room,user):
         return False
 
     return usernames
+
+@login_required
+def sendUser(request):
+    if not request.is_ajax():
+        #TODO:
+        return HttpResponse("<html><body>Ajax only url</body></html>")
+
+    errorlist = []
+    data = {}
+    
+    #TODO: error check this
+    roomTitle = request.POST.get('room')
+    userName = request.POST.get('username')
+
+    room = ChatRoom.objects.get(title=roomTitle)
+
+    #attempt to send message, check if error occured
+    if not userName:
+        print "no user"
+        errorlist.append( Error.NO_TITLE )
+        data['errors'] = json.dumps( errorlist )
+        return JsonResponse(data)
+    tempUser = User.objects.filter(username=userName)
+    if not tempUser.exists():
+        print "failure"
+        errorlist.append( Error.USER_DOES_NOT_EXIST )
+        data['errors'] = json.dumps( errorlist )
+        return JsonResponse(data)
+    usernameRE = room.addUser(tempUser[0])
+    if not isinstance(usernameRE,ChatToUser):
+        errorlist.append( usernameRE )
+        data['errors'] = json.dumps( errorlist )
+        return JsonResponse(data)
+
+    return updateChat(request)

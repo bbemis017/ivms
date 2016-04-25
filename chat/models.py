@@ -29,6 +29,7 @@ class ChatRoom(models.Model):
 
     def addUser(self,user):
         errorlist = []
+        print self
         if not isinstance(user,User):
             errorlist.append( Error.NO_USER)
             return errorlist

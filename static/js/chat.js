@@ -1,5 +1,6 @@
 $(window).load(onLoad);
 $('#send').click(sendMessage);
+$('#addUserButton').click(sendUser);
 
 var csrf_token = $.cookie('csrftoken');
 var messages = []
@@ -133,6 +134,17 @@ function sendMessage(){
 }
 
 /**
+ * sends a user info
+ */
+function sendUser(){
+  console.log("clicked");
+  var username = $('#user_name').val();
+
+  data = { 'username' :  username };
+  sendAjax('/chatInfo/sendUser/',data,onSendUserResponse);
+}
+
+/**
  * responds to response from sending message to server
  */
 function onSendMessageResponse(json){
@@ -144,6 +156,40 @@ function onSendMessageResponse(json){
     console.log(json);
   }
 
+}
+
+/**
+ * responds to response from sending username to server
+ */
+function onSendUserResponse(json){
+  console.log(json);
+  if( json.errors) {
+    var errorlist = JSON.parse(json.errors);
+    for(i = 0; i < errorlist.length; i++) {
+      if(errorlist[i] == 3){
+        $("#userNotExists").show();
+        $("#usernameEmpty").hide();
+        $("#userInRoom").hide();
+      }
+      else if(errorlist[i] == 4){
+        $("#userNotExists").hide();
+        $("#usernameEmpty").show();
+        $("#userInRoom").hide();
+      }
+      else if(errorlist[i] == 8){
+        $("#userNotExists").hide();
+        $("#usernameEmpty").hide();
+        $("#userInRoom").show();
+      }
+    }
+  }
+  else{
+    $("#userNotExists").hide();
+    $("#usernameEmpty").hide();
+    $("#userInRoom").hide();
+    $("#addUserModal").modal("hide");
+    console.log("success");
+  }
 }
 
 /**
