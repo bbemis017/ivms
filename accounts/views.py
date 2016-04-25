@@ -48,6 +48,8 @@ def signup(request):
             if isinstance(result,Accounts):
                 #success
                 print "success"
+                user = authenticate(username=username, password=password)
+                django_login(request, user)
                 return HttpResponseRedirect("/accounts/manage")
             else:
                 #failure
