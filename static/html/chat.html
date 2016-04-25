@@ -56,18 +56,23 @@
       <div id="messageZone" class="messageZone">
         <div hidden id="messageBox" class="well well-sm messageBox">
           <label id="author" class="author">adf: </label><label id="content">adf</label>
+          <input hidden id="messageData" />
+          <button id="replayBtn" onclick="replay(this)" class="btn btn-xs btn-secondary pull-right">
+            <span class="glyphicon glyphicon-volume-up"></span>
+          </button>
         </div>
       </div>
     </div>
+    <div id="end"></div>
 
-    <form>
+    <div>
       <div class="bottomChatInput">
-        <input id="send" type="button" value="Send Message" class="btn btn-primary submitButton" />
+        <input id="send" onkeypress="enter(event)" type="button" value="Send Message" class="btn btn-primary submitButton" />
         <div class="inputTextBox">
-          <input id="message" type="text" class="form-control textBox"/>
+          <input autofocus id="message" type="text" class="form-control textBox"/>
         </div>
       </div>
-    </form>
+    </div>
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="http://code.responsivevoice.org/responsivevoice.js"></script>

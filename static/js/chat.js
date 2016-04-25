@@ -1,6 +1,8 @@
 $(window).load(onLoad);
 $('#send').click(sendMessage);
 $('#addUserButton').click(sendUser);
+//$('#message').on('input',enter);
+$('#message').keypress(enter);
 
 var csrf_token = $.cookie('csrftoken');
 var messages = [];
@@ -11,6 +13,18 @@ var readSelf = false;
 var tempi = 0;
 var messageQueue = [];
 var readIndex = 0;
+var messageIndex = 0;
+
+function enter(e){
+  if( e.which == 13){
+    sendMessage();
+  }
+}
+
+function replay(button){
+  var i = button.parentElement.querySelector('#messageData').value;
+  read( messages[i] );
+}
 
 /**
  * parses messages into array of message
@@ -62,7 +76,7 @@ function getUsers(string){
 
   var raw = JSON.parse( string );
   for( var i = 0; i < raw.length; i++){
-    if( users.indexOf(raw[i]) > -1 )
+    if( users.indexOf(raw[i]) == -1 )
       addUser(raw[i]);
   }
 }
@@ -92,16 +106,27 @@ function addMessage(message){
 
 
   //
+  /*
     $('#messageZone').append('<div id="messageBox" class="well well-sm messageBox"><label id="author" class="author">' + display_author(message) + ':&nbsp;</label><label id="content">'+ display(message)+'</label></div>');
+    */
+   var copy = $('#messageBox').clone();
+   copy.find('#author').html( display_author(message) + ":&nbsp;" );
+   copy.find('#content').html( display(message) );
+   copy.find('#messageData').val(messageIndex);
+   messageIndex++;
+   copy.show();
+
+   $('#messageZone').append(copy);
+
+    updateScroll();
 }
 
 function updateScroll() {
-/*
-    var element = document.getElementById("messageZone");
-    element.scrollTop = element.scrollHeight;
-*/
-    var $count = $('#messageZone');
-    $count[0].scrollTop = $count[0].scrollHeight;
+
+    var count = $('#messageZone');
+    $('html, body').animate({
+      scrollTop: $('#end').offset().top
+    }, 0);
 
 }
 
@@ -124,7 +149,7 @@ function addUser(username){
   //TODO: insert user into document
 
     $user_list=$('#user_list');
-    $user_list.append('<li>' + users[0] + '</li>');
+    $user_list.append('<li>' + username + '</li>');
 
 }
 
