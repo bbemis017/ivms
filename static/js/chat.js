@@ -29,6 +29,7 @@ function getMessages(string){
       addMessage(message);
     }
   }
+
 }
 
 /**
@@ -41,7 +42,6 @@ function getUsers(string){
     return;
 
   var raw = JSON.parse( string );
-
   for( var i = 0; i < raw.length; i++){
     addUser(raw[i]);
   }
@@ -58,8 +58,28 @@ function addMessage(message){
   messages.push(message);
 
   //TODO: insert message in document
+    $('#messageZone').append('<div id="messageBox" class="well well-sm messageBox"><label id="author" class="author">' + display_author(message) + ':&nbsp;</label><label id="content">'+ display(message)+'</label></div>');
 }
 
+function updateScroll() {
+/*
+    var element = document.getElementById("messageZone");
+    element.scrollTop = element.scrollHeight;
+*/
+    var $count = $('#messageZone');
+    $count[0].scrollTop = $count[0].scrollHeight;
+
+}
+
+function display(message) {
+    var output = message['text'];
+    return output;
+}
+
+function display_author(message) {
+    var output = message['author'];
+    return output;
+}
 /**
  * Adds user to Array and TODO:document
  * username
@@ -68,6 +88,10 @@ function addUser(username){
   users.push(username);
 
   //TODO: insert user into document
+
+    $user_list=$('#user_list');
+    $user_list.append('<li>' + users[0] + '</li>');
+
 }
 
 /**
@@ -119,6 +143,7 @@ function onSendMessageResponse(json){
     console.log("error");
     console.log(json);
   }
+
 }
 
 /**
