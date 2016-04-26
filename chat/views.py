@@ -1,6 +1,7 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+#from django.http import JsonResponse
+from config.views import json_response
 from chat.models import *
 from config.constants import Error
 import json
@@ -52,14 +53,16 @@ def sendMessage(request):
     except ChatRoom.DoesNotExist:
         errorlist.append( Error.NO_CHATROOM )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
 
     #attempt to send message, check if error occured
     message = room.sendMessage(request.user,text)
     if not isinstance(message,Message):
         errorlist.append( message )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
 
     return updateChat(request)
 
@@ -92,14 +95,16 @@ def updateChat(request):
     except ChatRoom.DoesNotExist:
         errorlist.append( Error.NO_CHATROOM )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
 
     #get users in room and check if requesting user is in room
     userData = getUsers(room,request.user)
     if not isinstance(userData,list):
         errorlist.append( Error.USER_NOT_IN_ROOM )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
     else:
         data['users'] = json.dumps( userData ) 
 
@@ -107,13 +112,15 @@ def updateChat(request):
     messages = room.getMessages(request.user,lastMessage)
     if not isinstance(messages,str):
         data['errors'] = json.dumps( messages )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
     else:
         data['messages'] = messages
 
     print data
     #success 
-    return JsonResponse(data)
+    #return JsonResponse(data)
+    return json_response(data)
 
 def getUsers(room,user):
     userlist = ChatToUser.objects.filter(room=room)
@@ -153,17 +160,20 @@ def sendUser(request):
         print "no user"
         errorlist.append( Error.NO_TITLE )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
     tempUser = User.objects.filter(username=userName)
     if not tempUser.exists():
         print "failure"
         errorlist.append( Error.USER_DOES_NOT_EXIST )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
     usernameRE = room.addUser(tempUser[0])
     if not isinstance(usernameRE,ChatToUser):
         errorlist.append( usernameRE )
         data['errors'] = json.dumps( errorlist )
-        return JsonResponse(data)
+        #return JsonResponse(data)
+        return json_response(data)
 
     return updateChat(request)

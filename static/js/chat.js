@@ -288,6 +288,8 @@ function sendAjax(url,data,successCall){
   else
     lastMessage = lastMessage['id'];
 
+  console.log("lastMessage" + lastMessage);
+
   data['lastMessage'] = lastMessage;
   data['room'] = title;
   data['csrfmiddlewaretoken'] = csrf_token;

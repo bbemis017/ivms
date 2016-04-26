@@ -43,7 +43,7 @@
 
 .messageZone {
     margin-left: 20px;
-    margin-bottom: 40px;
+    padding-bottom: 40px;
 }
 .message {
     font-size: 18px;

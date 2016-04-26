@@ -92,9 +92,9 @@ class ChatRoom(models.Model):
             return errorlist
 
         if number != None:
-            messages = Message.objects.filter(room=self,id__gt=number)
+            messages = Message.objects.filter(room=self,id__gt=number).order_by('id')
         else:
-            messages = Message.objects.filter(room=self)
+            messages = Message.objects.filter(room=self).order_by('id')
 
         messageList = []
         if messages.exists():
