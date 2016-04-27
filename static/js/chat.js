@@ -211,6 +211,7 @@ function nextRead(){
 function sendMessage(){
   console.log("clicked");
   var message = $('#message').val();
+  $('#message').val("");
 
   data = { 'message' :  message };
   sendAjax('/chatInfo/sendMessage/',data,onSendMessageResponse);
@@ -233,7 +234,7 @@ function sendUser(){
 function onSendMessageResponse(json){
   console.log("send message success");
   if( !json.errors){
-    onUpdateResponse(json);
+    //onUpdateResponse(json);
     $('#message').val("");
   }
   else{
@@ -306,7 +307,7 @@ function poll(){
 
   updateRoom();
 
-  setTimeout(poll,800);
+  setTimeout(poll,500);
 }
 
 /**
